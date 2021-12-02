@@ -57,6 +57,7 @@ const publications = [
 
 module.exports = {books, authors, publications}
 
+// mongoose -> Validation
 
 
 
