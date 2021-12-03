@@ -6,7 +6,7 @@ const books = [
         language:"English",
         numPage: 250,
         author:["Robert Kiyosaki","Sharon Lechter"],
-        publications:["P01"],
+        publications:"P01",
         category:["tech","programming"]
     },
     {

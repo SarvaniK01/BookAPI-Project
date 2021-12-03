@@ -268,10 +268,10 @@ Parameters              NONE
 Methods                 POST
 */
 
-BookY.post("/book/new",(request,response)=>{
+BookY.post("/book/new",async(request,response)=>{
     const { newBook } = request.body;
-    database.books.push(newBook);
-    return response.json({updatedBooks: database.books});
+    BookModel.create(newBook);
+    return response.json({books: database.books, message:"Your Book has been added"});
 });
 
 // POST REQUEST
@@ -284,10 +284,10 @@ Parameters              NONE
 Methods                 POST
 */
 
-BookY.post("/author/new",(request,response)=>{
-    const newAuthor = request.body;
-    database.authors.push(newAuthor);
-    return response.json({updatedAuthors: database.authors});
+BookY.post("/author/new",async (request,response)=>{
+    const { newAuthor }= request.body;
+    AuthorModel.create(newAuthor);
+    return response.json({authors: database.authors, message: "New Author was added"});
 });
 
 
@@ -301,12 +301,34 @@ Parameters              NONE
 Methods                 POST
 */
 
-BookY.post("/publication/new",(request,response)=>{
-    const newPublication = request.body;
-    database.publications.push(newPublication);
-    return response.json({updatedPublication: database.publications});
+BookY.post("/publication/new",async (request,response)=>{
+    const { newPublication } = request.body;
+    PublicationModel.create(newPublication);
+    return response.json({publications: database.publications, message:"New Publication has been added"});
 });
 
+// UPDATE ABOOK TITLE
+/*
+Route                   /book/update/:isbn
+Description             update the title of the book
+Access                  Public
+Parameters              isbn
+Methods                 Put
+*/
+BookY.put("/book/update/:isbn", async (request, response)=>{
+    const updatedBook  = await BookModel.findOneAndUpdate(
+        {
+            ISBN : request.params.isbn
+        },
+        {
+            title : request.body.bookTitle
+        },
+        {
+            new: true
+        }
+    )
+    return response.json({books : database.books});
+});
 
 
 //UPDATE PUBLICATION AND BOOK
@@ -353,12 +375,12 @@ Access                  Public
 Parameters              isbn
 Methods                 delete
 */
-BookY.delete("/book/delete/:isbn", (request,response) =>{
-    const updateBookDatabase = database.books.filter(
-        (book) => book.ISBN !== request.params.isbn
+BookY.delete("/book/delete/:isbn", async (request,response) =>{
+    const updateBookDatabase = await BookModel.findOneAndDelete(
+        {
+            ISBN: request.params.isbn
+        }
     );
-
-    database.books = updateBookDatabase;
 
     return response.json({books : database.books});
 });
@@ -369,34 +391,52 @@ BookY.delete("/book/delete/:isbn", (request,response) =>{
 // ADD NEW PUBLICATION
 /*
 Route                   /book/delete/author
-Description             delete an author from a     book and vice versa
+Description             delete an author from a book and vice versa
 Access                  Public
 Parameters              isbn, authorId
 Methods                 DELETE
 */
-BookY.delete("/book/delete/author/:isbn/:authorId", (request,response)=> {
+BookY.delete("/book/delete/author/:isbn/:authorId", async (request,response)=> {
 
     // Update the book database
-    database.books.forEach((b)=>{
-        if(b.ISBN === request.params.isbn){
-            const newAuthorList = b.author.filter(
-                (eachAuthor) => eachAuthor!== parseInt(request.params.authorId)
-            )
-            b.author = newAuthorList;
-            return;
+    const updatedBook =  await BookModel.findOneAndUpdate(
+        {
+            ISBN : request.params.isbn
+        },
+        {
+            $pull :{
+                authors : parseInt(request.params.authorId)
+            }
+        },
+        {
+            new: true
         }
-    });
+    )
 
     // UPDATE AUTHOR DATABASE
-    database.authors.forEach((a)=>{
-        if(a.id === parseInt(request.params.authorId)){
-            const newBookList = a.book.filter(
-                (book) => book !== request.params.isbn
-            );
-            a.book = newBookList;
-            return;
+    // database.authors.forEach((a)=>{
+    //     if(a.id === parseInt(request.params.authorId)){
+    //         const newBookList = a.book.filter(
+    //             (book) => book !== request.params.isbn
+    //         );
+    //         a.book = newBookList;
+    //         return;
+    //     }
+    // });
+
+    const updatedAuthor = await AuthorModel.findOneAndUpdate(
+        {
+
+        },
+        {
+            $pull :{
+
+            }
+        },
+        {
+            new:true
         }
-    });
+    )
 
     return response.json({
         book : database.books,
