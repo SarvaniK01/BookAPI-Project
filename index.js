@@ -413,24 +413,13 @@ BookY.delete("/book/delete/author/:isbn/:authorId", async (request,response)=> {
         }
     )
 
-    // UPDATE AUTHOR DATABASE
-    // database.authors.forEach((a)=>{
-    //     if(a.id === parseInt(request.params.authorId)){
-    //         const newBookList = a.book.filter(
-    //             (book) => book !== request.params.isbn
-    //         );
-    //         a.book = newBookList;
-    //         return;
-    //     }
-    // });
-
     const updatedAuthor = await AuthorModel.findOneAndUpdate(
         {
-
+            authorId : parseInt(request.params.authorId)
         },
         {
             $pull :{
-
+                books : request.params.isbn
             }
         },
         {
