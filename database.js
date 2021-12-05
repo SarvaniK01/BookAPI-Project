@@ -5,7 +5,7 @@ const books = [
         pubDate: "2021-11-25",
         language:"English",
         numPage: 250,
-        author:["Robert Kiyosaki","Sharon Lechter"],
+        author:["A01"],
         publications:"P01",
         category:["tech","programming"]
     },
@@ -15,7 +15,7 @@ const books = [
         pubDate: "2021-11-27",
         language:"French",
         numPage: 300,
-        author:["Robin Sharma"],
+        author:["A02"],
         publications:["P02"],
         category:["motivation","self-help"]
     }

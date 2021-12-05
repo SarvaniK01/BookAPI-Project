@@ -270,8 +270,8 @@ Methods                 POST
 
 BookY.post("/book/new",async(request,response)=>{
     const { newBook } = request.body;
-    BookModel.create(newBook);
-    return response.json({books: database.books, message:"Your Book has been added"});
+    const addNewBook = BookModel.create(newBook);
+    return response.json({books: addNewBook, message:"Your Book has been added"});
 });
 
 // POST REQUEST
@@ -285,9 +285,9 @@ Methods                 POST
 */
 
 BookY.post("/author/new",async (request,response)=>{
-    const { newAuthor }= request.body;
-    AuthorModel.create(newAuthor);
-    return response.json({authors: database.authors, message: "New Author was added"});
+    const { newAuthor } = request.body;
+    const addNewAuthor = AuthorModel.create(newAuthor);
+    return response.json({authors: addNewAuthor, message: "New Author was added"});
 });
 
 
@@ -303,8 +303,8 @@ Methods                 POST
 
 BookY.post("/publication/new",async (request,response)=>{
     const { newPublication } = request.body;
-    PublicationModel.create(newPublication);
-    return response.json({publications: database.publications, message:"New Publication has been added"});
+    const addNewPublication = PublicationModel.create(newPublication);
+    return response.json({publications: addNewPublication, message:"New Publication has been added"});
 });
 
 // UPDATE ABOOK TITLE
@@ -327,7 +327,7 @@ BookY.put("/book/update/:isbn", async (request, response)=>{
             new: true
         }
     )
-    return response.json({books : database.books});
+    return response.json({books : updatedBook});
 });
 
 
@@ -382,7 +382,7 @@ BookY.delete("/book/delete/:isbn", async (request,response) =>{
         }
     );
 
-    return response.json({books : database.books});
+    return response.json({books : updateBookDatabase});
 });
 
 
@@ -428,8 +428,8 @@ BookY.delete("/book/delete/author/:isbn/:authorId", async (request,response)=> {
     )
 
     return response.json({
-        book : database.books,
-        author: database.authors,
+        book : updatedBook,
+        author: updatedAuthor,
         message: "Author and book are deleted!"
     })
 });
