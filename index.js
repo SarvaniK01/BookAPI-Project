@@ -413,6 +413,7 @@ BookY.delete("/book/delete/author/:isbn/:authorId", async (request,response)=> {
         }
     )
 
+    // Update the author Database
     const updatedAuthor = await AuthorModel.findOneAndUpdate(
         {
             authorId : parseInt(request.params.authorId)
